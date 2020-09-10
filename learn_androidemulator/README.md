@@ -1,10 +1,10 @@
 ### UI
 
 - [x] Login UI
-- [ ] Home UI
-  - [ ] List
-    - [ ] List in Image
-      - [ ] Filter
+- [x] Home UI
+  - [x] List
+    - [x] List in Image
+      - [x] Filter
     - [x] List in Table
       - [x] View
         - [x] Delete

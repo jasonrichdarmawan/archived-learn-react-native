@@ -7,7 +7,14 @@ import {
   ScrollView,
 } from 'react-native';
 
-import {ListItem, Avatar, Card, Input, Button} from 'react-native-elements';
+import {
+  ListItem,
+  Avatar,
+  Card,
+  Input,
+  Button,
+  SearchBar,
+} from 'react-native-elements';
 
 const styles = StyleSheet.create({
   content: {
@@ -101,8 +108,14 @@ export function HomeScreen(
     setView('add');
   }
   function handleSubmit() {
-    setList(list => [...list, inputs])
+    setList((list) => [...list, inputs]);
     setView('table');
+  }
+
+  const [search, setSearch] = React.useState();
+  function handleSearch(value) {
+    setView('search');
+    setSearch(value);
   }
 
   return (
@@ -126,6 +139,38 @@ export function HomeScreen(
             />
           </>
         )}
+        {(view === 'table' || view === 'image' || view === 'search') && (
+          <SearchBar
+            placeholder="Type Here..."
+            onChangeText={handleSearch}
+            value={search}
+          />
+        )}
+        {view === 'search' &&
+          // list.filter((item) =>
+          //   item.name.contains(search).map((l, i) => (
+          //     <Card key={'card' + i}>
+          //       <Card.Title>{l.name}</Card.Title>
+          //       <Card.Divider />
+          //       <Card.Image source={{uri: l.avatar_url}} />
+          //       <Text style={styles.text}>{l.subtitle}</Text>
+          //     </Card>
+          //   ))
+          // )
+          list
+            .filter((item) => item.name.includes(search))
+            .map((l, i) => (
+              <ListItem
+                key={'listitem' + i}
+                onPress={() => handleItem(i)}
+                bottomDivider>
+                <Avatar source={{uri: l.avatar_url}} />
+                <ListItem.Content>
+                  <ListItem.Title>{l.name}</ListItem.Title>
+                  <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+                </ListItem.Content>
+              </ListItem>
+            ))}
         {view === 'table' ? (
           list.map((l, i) => (
             <ListItem

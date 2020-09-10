@@ -147,16 +147,6 @@ export function HomeScreen(
           />
         )}
         {view === 'search' &&
-          // list.filter((item) =>
-          //   item.name.contains(search).map((l, i) => (
-          //     <Card key={'card' + i}>
-          //       <Card.Title>{l.name}</Card.Title>
-          //       <Card.Divider />
-          //       <Card.Image source={{uri: l.avatar_url}} />
-          //       <Text style={styles.text}>{l.subtitle}</Text>
-          //     </Card>
-          //   ))
-          // )
           list
             .filter((item) => item.name.includes(search))
             .map((l, i) => (

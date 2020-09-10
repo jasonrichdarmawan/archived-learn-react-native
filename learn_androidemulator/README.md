@@ -1,11 +1,12 @@
 ### UI
 
-- [ ] Login UI
+- [x] Login UI
 - [ ] Home UI
   - [ ] List
     - [ ] List in Image
       - [ ] Filter
-    - [ ] List in Table
-      - [ ] Delete
-      - [ ] Edit
-  - [ ] Add new `id, name, imageUri`
+    - [x] List in Table
+      - [x] View
+        - [x] Delete
+        - [x] Edit
+      - [ ] Add new `id, name, imageUri`

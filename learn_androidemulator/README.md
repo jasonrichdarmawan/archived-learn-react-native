@@ -9,4 +9,4 @@
       - [x] View
         - [x] Delete
         - [x] Edit
-      - [ ] Add new `id, name, imageUri`
+      - [x] Add new `id, name, imageUri`

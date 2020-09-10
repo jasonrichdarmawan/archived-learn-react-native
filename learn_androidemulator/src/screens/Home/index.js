@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   StyleSheet,
-  // View,
+  View,
   Text,
   // Button,
   ScrollView,
@@ -97,73 +97,123 @@ export function HomeScreen(
     setIndex();
   }
 
+  function handleAdd() {
+    setView('add');
+  }
+  function handleSubmit() {
+    setList(list => [...list, inputs])
+    setView('table');
+  }
+
   return (
     <>
       <ScrollView>
-        {view === 'item' || (
-          <Button
-            onPress={handleView}
-            title={title}
-            accessibilityLabel={title}
-          />
+        {(view === 'table' || view === 'image') && (
+          <>
+            <Button
+              onPress={handleView}
+              title={title}
+              accessibilityLabel={title}
+            />
+            <Button
+              onPress={handleAdd}
+              title="Add"
+              accessibilityLabel="Add"
+              buttonStyle={[
+                styles.button,
+                {width: '25%', alignSelf: 'flex-end'},
+              ]}
+            />
+          </>
         )}
-        {view === 'table'
-          ? list.map((l, i) => (
-              <ListItem
-                key={'listitem' + i}
-                onPress={() => handleItem(i)}
-                bottomDivider>
-                <Avatar source={{uri: l.avatar_url}} />
-                <ListItem.Content>
-                  <ListItem.Title>{l.name}</ListItem.Title>
-                  <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
-                </ListItem.Content>
-              </ListItem>
-            ))
-          : view === 'image'
-          ? list.map((l, i) => (
-              <Card key={'card' + i}>
-                <Card.Title>{l.name}</Card.Title>
-                <Card.Divider />
-                <Card.Image source={{uri: l.avatar_url}} />
-                <Text style={styles.text}>{l.subtitle}</Text>
-              </Card>
-            ))
-          : view === 'item' && (
-              <>
-                {/* question: how to fix shorten the JSX? */}
-                {/* {Object.entries(inputs).map(([key, value], i) => (
-                  <Input key={"input" + i} label={key} value={value} />
-                ))} */}
-                <Input
-                  label="name"
-                  value={name}
-                  onChangeText={(value) => handleChange('name', value)}
-                />
-                <Input
-                  label="avatar_url"
-                  value={avatar_url}
-                  onChangeText={(value) => handleChange('avatar_url', value)}
-                />
-                <Input
-                  label="subtitle"
-                  value={subtitle}
-                  onChangeText={(value) => handleChange('subtitle', value)}
-                />
-                <Button
-                  onPress={handleSave}
-                  title="Save"
-                  accessibilityLabel="Save"
-                  buttonStyle={[styles.button]}
-                />
-                <Button
-                  onPress={handleDelete}
-                  title="Delete"
-                  accessibilityLabel="Delete"
-                  buttonStyle={[styles.button, {backgroundColor: 'red'}]}
-                />
-              </>
-            )}
+        {view === 'table' ? (
+          list.map((l, i) => (
+            <ListItem
+              key={'listitem' + i}
+              onPress={() => handleItem(i)}
+              bottomDivider>
+              <Avatar source={{uri: l.avatar_url}} />
+              <ListItem.Content>
+                <ListItem.Title>{l.name}</ListItem.Title>
+                <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem>
+          ))
+        ) : view === 'image' ? (
+          list.map((l, i) => (
+            <Card key={'card' + i}>
+              <Card.Title>{l.name}</Card.Title>
+              <Card.Divider />
+              <Card.Image source={{uri: l.avatar_url}} />
+              <Text style={styles.text}>{l.subtitle}</Text>
+            </Card>
+          ))
+        ) : view === 'item' ? (
+          <>
+            {/* question: how to shorten the JSX? */}
+            {/* {Object.entries(inputs).map(([key, value], i) => (
+              <Input
+                key={'input' + i}
+                label={key}
+                value={value}
+                onChangeText={(value) => handleChange(key, value)}
+              />
+            ))} */}
+            <Input
+              label="name"
+              value={name}
+              onChangeText={(value) => handleChange('name', value)}
+            />
+            <Input
+              label="avatar_url"
+              value={avatar_url}
+              onChangeText={(value) => handleChange('avatar_url', value)}
+            />
+            <Input
+              label="subtitle"
+              value={subtitle}
+              onChangeText={(value) => handleChange('subtitle', value)}
+            />
+            <Button
+              onPress={handleSave}
+              title="Save"
+              accessibilityLabel="Save"
+              buttonStyle={[styles.button]}
+            />
+            <Button
+              onPress={handleDelete}
+              title="Delete"
+              accessibilityLabel="Delete"
+              buttonStyle={[styles.button, {backgroundColor: 'red'}]}
+            />
+          </>
+        ) : (
+          view === 'add' && (
+            <>
+              <Input
+                label="name"
+                value={name}
+                onChangeText={(value) => handleChange('name', value)}
+              />
+              <Input
+                label="avatar_url"
+                value={avatar_url}
+                onChangeText={(value) => handleChange('avatar_url', value)}
+              />
+              <Input
+                label="subtitle"
+                value={subtitle}
+                onChangeText={(value) => handleChange('subtitle', value)}
+              />
+              <Button
+                onPress={handleSubmit}
+                title="Save"
+                accessibilityLabel="Save"
+                buttonStyle={[styles.button]}
+              />
+            </>
+          )
+        )}
       </ScrollView>
 
       {/* <View style={styles.content}>

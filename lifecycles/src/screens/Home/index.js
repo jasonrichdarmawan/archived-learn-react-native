@@ -31,14 +31,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export function HomeScreen(
-  {
-    // navigation
-  },
-) {
-  // function signOut() {
-  //   navigation.navigate('Sign In');
-  // }
+export function HomeScreen({navigation}) {
+  function signOut() {
+    navigation.navigate('Sign In');
+  }
 
   const [list, setList] = React.useState([
     {
@@ -118,15 +114,26 @@ export function HomeScreen(
     setSearch(value);
   }
 
+  function navigateToAlbumScreen() {
+    navigation.navigate('Album');
+  }
+
   return (
     <>
       <ScrollView>
+        <Button
+          onPress={navigateToAlbumScreen}
+          title="Fetch Album"
+          accessibilityLabel="Fetch Album"
+          buttonStyle={styles.button}
+        />
         {(view === 'table' || view === 'image') && (
           <>
             <Button
               onPress={handleView}
               title={title}
               accessibilityLabel={title}
+              buttonStyle={styles.button}
             />
             <Button
               onPress={handleAdd}
@@ -251,7 +258,7 @@ export function HomeScreen(
         )}
       </ScrollView>
 
-      {/* <View style={styles.content}>
+      <View style={styles.content}>
         <Text style={styles.text}>Signed in successfully</Text>
         <Button
           onPress={signOut}
@@ -259,7 +266,7 @@ export function HomeScreen(
           title="Sign Out"
           accessibilityLabel="Sign Out"
         />
-      </View> */}
+      </View>
     </>
   );
 }

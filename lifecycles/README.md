@@ -12,4 +12,5 @@
       - [x] Add new `id, name, imageUri`
 - [x] AlbumScreen
   - [x] List fetched albums and pagination
-  - [x] View specific album
+  - [x] List fetched photos with specific albumId
+  - [x] View specific photos.

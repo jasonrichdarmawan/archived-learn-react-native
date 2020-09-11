@@ -34,7 +34,7 @@ export function AlbumScreen() {
   const [data, setData] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
 
-  const [viewId, setViewId] = React.useState();
+  const [albumId, setAlbumId] = React.useState();
   const [filteredData, setFilteredData] = React.useState();
   const [viewData, setViewData] = React.useState();
 
@@ -47,7 +47,7 @@ export function AlbumScreen() {
   const [pages, setPages] = React.useState([1, 2, 3, 4, 5]);
 
   React.useEffect(() => {
-    if (!viewId) {
+    if (!albumId) {
       console.log('render');
       fetch(
         `http://jsonplaceholder.typicode.com/albums?_start=${
@@ -58,10 +58,10 @@ export function AlbumScreen() {
         .then((json) => setData(json))
         .catch((error) => console.error(error))
         .finally(() => setLoading(false));
-    } else if (viewId) {
-      console.log(`render viewId ${viewId}`);
+    } else if (albumId) {
+      console.log(`render albumId ${albumId}`);
       fetch(
-        `https://jsonplaceholder.typicode.com/photos?albumId=${viewId}&_start=${
+        `https://jsonplaceholder.typicode.com/photos?albumId=${albumId}&_start=${
           currentPage * itemPerPage - itemPerPage
         }&_limit=${itemPerPage}`,
       )
@@ -70,14 +70,14 @@ export function AlbumScreen() {
         .catch((error) => console.error(error))
         .finally(() => setLoading(false));
     }
-  }, [currentPage, itemPerPage, viewId]);
+  }, [currentPage, itemPerPage, albumId]);
 
   function handleFilter(i) {
     setCurrentPage(1);
     setItemPerPage(10);
 
     setLoading(true);
-    setViewId(i);
+    setAlbumId(i);
   }
 
   function renderItem({item}) {

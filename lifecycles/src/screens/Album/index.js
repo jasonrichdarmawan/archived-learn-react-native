@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import {ListItem} from 'react-native-elements';
+import {ListItem, Card} from 'react-native-elements';
 
 function Item({item, onPress, style}) {
   return (
@@ -29,7 +29,14 @@ export function AlbumScreen() {
   const [isLoading, setLoading] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
+  const [view, setView] = React.useState();
+
+  // question: pagination vs load more in Native.
+
+  // TODO: filter settings
   const [itemPerPage, setItemPerPage] = React.useState(10);
+
+  // TODO: dynamic pages
   const [pages, setPages] = React.useState([1, 2, 3, 4, 5]);
 
   React.useEffect(() => {
@@ -40,14 +47,19 @@ export function AlbumScreen() {
       }&_limit=${itemPerPage}`,
     )
       .then((res) => res.json())
-      // .then((json) => setData(json.movies))
       .then((json) => setData(json))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, [currentPage, itemPerPage]);
 
   function handleItem(i) {
-    console.log(i);
+    setLoading(true);
+    console.log(`render view ${i}`);
+    fetch(`https://jsonplaceholder.typicode.com/photos/${i}`)
+      .then((res) => res.json())
+      .then((json) => (console.log(json), setView(json)))
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
   }
 
   function renderItem({item}) {
@@ -65,6 +77,12 @@ export function AlbumScreen() {
     <>
       {isLoading ? (
         <ActivityIndicator />
+      ) : view ? (
+        <Card>
+          <Card.Title>{view.title}</Card.Title>
+          <Card.Divider />
+          <Card.Image source={{uri: view.url}} />
+        </Card>
       ) : (
         <ScrollView>
           {data.map((item) => (

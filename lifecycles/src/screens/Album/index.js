@@ -75,10 +75,16 @@ export function AlbumScreen() {
     setAlbumId(i);
   }
 
+  // TODO: refactor
   function handleChangePage(item) {
     console.log(item);
     setCurrentPage(item);
-    setPages((pages) => pages.map((page) => page + 1));
+    setPages((pages) =>
+      pages.map((page) => {
+        if (currentPage < item) return page + (item - currentPage);
+        else if (currentPage > item || currentPage === item) return page - 1;
+      }),
+    );
   }
 
   function renderItem({item}) {

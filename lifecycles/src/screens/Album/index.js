@@ -7,11 +7,7 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import {
-  ListItem,
-  Card,
-  Avatar,
-} from 'react-native-elements';
+import {ListItem, Card, Avatar} from 'react-native-elements';
 
 function Item({item, onPress, style}) {
   return (
@@ -43,7 +39,6 @@ export function AlbumScreen() {
   // TODO: filter settings
   const [itemPerPage, setItemPerPage] = React.useState(10);
 
-  // TODO: dynamic pages
   const [pages, setPages] = React.useState([1, 2, 3, 4, 5]);
 
   React.useEffect(() => {
@@ -80,12 +75,18 @@ export function AlbumScreen() {
     setAlbumId(i);
   }
 
+  function handleChangePage(item) {
+    console.log(item);
+    setCurrentPage(item);
+    setPages((pages) => pages.map((page) => page + 1));
+  }
+
   function renderItem({item}) {
     const backgroundColor = item === currentPage ? '#4CAF50' : undefined;
     return (
       <Item
         item={item}
-        onPress={() => setCurrentPage(item)}
+        onPress={() => handleChangePage(item)}
         style={{backgroundColor}}
       />
     );

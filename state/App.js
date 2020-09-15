@@ -22,6 +22,8 @@ import {Button, View, Text} from 'react-native';
 
 import Modal from 'react-native-modal';
 
+import Splash from './src/components/Splash';
+
 function PayScreenModal() {
   const [isModalVisible, setModalVisible] = React.useState(false);
 
@@ -37,8 +39,7 @@ function PayScreenModal() {
         isVisible={isModalVisible}
         // onBackdropPress={toggleModal}
         onSwipeComplete={() => setModalVisible(false)}
-        swipeDirection="down"
-      >
+        swipeDirection="down">
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text>Hello!</Text>
         </View>
@@ -106,11 +107,21 @@ function MyDrawer() {
   );
 }
 
-export default function App() {
+function App() {
+  const {isAuthorized} = useSelector(selectAuthState);
+  const dispatch = useDispatch();
+  if (isAuthorized === undefined) {
+    dispatch(fetchAuthState());
+    return <Splash />;
+  }
+  return <MyDrawer />;
+}
+
+export default function Root() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <MyDrawer />
+        <App />
       </NavigationContainer>
     </Provider>
   );

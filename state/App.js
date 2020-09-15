@@ -126,6 +126,10 @@ function MyDrawer() {
   );
 }
 
+// question: Is callback better than Redux in this case?
+// reference: https://stackoverflow.com/questions/47027401/pass-props-stacknavigator
+// note: React Navigation 5 `Screen` can't pass props, the alternative is Callback, Context or Redux.
+
 function App() {
   const {isAuthorized} = useSelector(selectAuthState);
 

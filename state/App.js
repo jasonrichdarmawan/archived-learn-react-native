@@ -18,9 +18,36 @@ import Dashboard from './src/features/Dashboard';
 import Album from './src/features/Album';
 import Feed from './src/features/Feed';
 
-import {Button} from 'react-native';
+import {Button, View, Text} from 'react-native';
 
-const SignInComponent = () => null;
+import Modal from 'react-native-modal';
+
+function PayScreenModal() {
+  const [isModalVisible, setModalVisible] = React.useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  return (
+    <View style={{flex: 1}}>
+      <Button title="Show modal" onPress={toggleModal} />
+
+      <Modal
+        isVisible={isModalVisible}
+        // onBackdropPress={toggleModal}
+        onSwipeComplete={() => setModalVisible(false)}
+        swipeDirection="down"
+      >
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <Text>Hello!</Text>
+        </View>
+      </Modal>
+    </View>
+  );
+}
+
+const nullComponent = () => null;
 const Tab = createBottomTabNavigator();
 function MyTabs() {
   return (
@@ -28,6 +55,11 @@ function MyTabs() {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="Album" component={Album} />
+      <Tab.Screen
+        name="Pay"
+        component={nullComponent}
+        options={{tabBarButton: () => <PayScreenModal />}}
+      />
       <Tab.Screen
         options={({navigation}) => ({
           tabBarButton: () => (
@@ -38,7 +70,7 @@ function MyTabs() {
           ),
         })}
         name="SignInComponent"
-        component={SignInComponent}
+        component={nullComponent}
       />
     </Tab.Navigator>
   );
@@ -48,7 +80,13 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen options={{title: ''}} name="MyTabs" component={MyTabs} />
+      <Stack.Screen
+        options={{
+          headerTitle: '',
+        }}
+        name="MyTabs"
+        component={MyTabs}
+      />
       <Stack.Screen name="Sign In" component={SignIn} />
     </Stack.Navigator>
   );

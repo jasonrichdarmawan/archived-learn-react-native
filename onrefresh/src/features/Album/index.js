@@ -163,8 +163,8 @@ export default function Album() {
           <SafeAreaView>
             <FlatList
               data={data}
-              // Is this parameter bad for performance? Put it into perspective, it renders 1,5x more if this parameter is set to half.
-              // initialNumToRender={itemPerPage / 2}
+              // Is this parameter bad for performance? Instead render 10 items at a time, we can decide how many items to render initially.
+              initialNumToRender={itemPerPage}
 
               renderItem={memo}
               keyExtractor={(item) =>

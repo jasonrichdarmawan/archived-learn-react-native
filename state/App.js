@@ -11,12 +11,15 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   fetchAuthState,
   selectAuthState,
+  signIn,
 } from './src/features/AuthState/AuthStateSlice';
+
 import Home from './src/features/Home';
+import Feed from './src/features/Feed';
 import SignIn from './src/features/SignIn';
 import Dashboard from './src/features/Dashboard';
 import Album from './src/features/Album';
-import Feed from './src/features/Feed';
+import Account from './src/features/Account';
 
 import {Button, View, Text} from 'react-native';
 
@@ -51,6 +54,15 @@ function PayScreenModal() {
 const nullComponent = () => null;
 const Tab = createBottomTabNavigator();
 function MyTabs() {
+  const {isAuthorized} = useSelector(selectAuthState);
+  const dispatch = useDispatch();
+
+  if (isAuthorized === false) {
+    setTimeout(() => {
+      dispatch(signIn());
+    }, 3000);
+  }
+
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={Home} />
@@ -61,24 +73,28 @@ function MyTabs() {
         component={nullComponent}
         options={{tabBarButton: () => <PayScreenModal />}}
       />
-      <Tab.Screen
-        options={({navigation}) => ({
-          tabBarButton: () => (
-            <Button
-              onPress={() => navigation.navigate('Sign In')}
-              title="Sign In"
-            />
-          ),
-        })}
-        name="SignInComponent"
-        component={nullComponent}
-      />
+      {isAuthorized === false ? (
+        <Tab.Screen
+          options={({navigation}) => ({
+            tabBarButton: () => (
+              <Button
+                onPress={() => navigation.navigate('Sign In')}
+                title="Sign In"
+              />
+            ),
+          })}
+          name="SignInComponent"
+          component={nullComponent}
+        />
+      ) : (
+        <Tab.Screen name="Account" component={Account} />
+      )}
     </Tab.Navigator>
   );
 }
 
 const Stack = createStackNavigator();
-function MyStack() {
+function MyStack({isAuthorized}) {
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -88,7 +104,9 @@ function MyStack() {
         name="MyTabs"
         component={MyTabs}
       />
-      <Stack.Screen name="Sign In" component={SignIn} />
+      {isAuthorized === false && (
+        <Stack.Screen name="Sign In" component={SignIn} />
+      )}
     </Stack.Navigator>
   );
 }
@@ -109,11 +127,13 @@ function MyDrawer() {
 
 function App() {
   const {isAuthorized} = useSelector(selectAuthState);
+
   const dispatch = useDispatch();
   if (isAuthorized === undefined) {
     dispatch(fetchAuthState());
     return <Splash />;
   }
+
   return <MyDrawer />;
 }
 

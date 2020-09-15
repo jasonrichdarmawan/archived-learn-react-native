@@ -2,10 +2,10 @@ import React from 'react';
 
 import {View, Text, Button} from 'react-native';
 
-export default function Dashboard({navigation}) {
+export default function Account() {
   return (
     <View>
-      <Text>Dashboard</Text>
+      <Text>Account</Text>
     </View>
   );
 }

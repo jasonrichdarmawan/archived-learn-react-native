@@ -53,8 +53,9 @@ function PayScreenModal() {
 
 const nullComponent = () => null;
 const Tab = createBottomTabNavigator();
-function MyTabs() {
-  const {isAuthorized} = useSelector(selectAuthState);
+function MyTabs({isAuthorized}) {
+  // const {isAuthorized} = useSelector(selectAuthState);
+  console.log('MyTabs() isAuthorized', isAuthorized); // Screen can't pass props.
   const dispatch = useDispatch();
 
   if (isAuthorized === false) {
@@ -103,8 +104,10 @@ function MyStack() {
           headerTitle: '',
         }}
         name="MyTabs"
-        component={MyTabs}
-      />
+      >
+        {/* see why callback is bad in question #1's reference */}
+        {() => <MyTabs isAuthorized={isAuthorized} />}
+      </Stack.Screen>
       {isAuthorized === false && (
         <Stack.Screen name="Sign In" component={SignIn} />
       )}
@@ -126,7 +129,7 @@ function MyDrawer() {
   );
 }
 
-// question: Is callback better than Redux in this case?
+// question #1: Is callback better than Redux in this case?
 // reference: https://stackoverflow.com/questions/47027401/pass-props-stacknavigator
 // note: React Navigation 5 `Screen` can't pass props, the alternative is Callback, Context or Redux.
 

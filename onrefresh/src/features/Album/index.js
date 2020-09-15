@@ -100,7 +100,8 @@ function Separator() {
 export default function Album() {
   const [isLoading, setLoading] = React.useState(true);
   const [currentPage, setCurrentPage] = React.useState(1);
-  const [itemPerPage, setItemPerPage] = React.useState(20);
+  // const [itemPerPage, setItemPerPage] = React.useState(20);
+  const itemPerPage = 20;
   const [data, setData] = React.useState([]);
   const [error, setError] = React.useState();
 

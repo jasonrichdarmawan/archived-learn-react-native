@@ -16,8 +16,9 @@ import Home from './src/features/Home';
 import SignIn from './src/features/SignIn';
 import Dashboard from './src/features/Dashboard';
 import Album from './src/features/Album';
+import Feed from './src/features/Feed';
 
-import {Button, View, Text} from 'react-native';
+import {Button} from 'react-native';
 
 const SignInComponent = () => null;
 const Tab = createBottomTabNavigator();
@@ -53,18 +54,6 @@ function MyStack() {
   );
 }
 
-const Feed = () => (
-  <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-    <Text>Feed Screen</Text>
-  </View>
-);
-
-const Article = () => (
-  <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-    <Text>Article Screen</Text>
-  </View>
-);
-
 const Drawer = createDrawerNavigator();
 function MyDrawer() {
   return (
@@ -75,7 +64,6 @@ function MyDrawer() {
         component={MyStack}
       />
       <Drawer.Screen name="Feed" component={Feed} />
-      <Drawer.Screen name="Article" component={Article} />
     </Drawer.Navigator>
   );
 }

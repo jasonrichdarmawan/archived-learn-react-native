@@ -94,7 +94,8 @@ function MyTabs() {
 }
 
 const Stack = createStackNavigator();
-function MyStack({isAuthorized}) {
+function MyStack() {
+  const {isAuthorized} = useSelector(selectAuthState);
   return (
     <Stack.Navigator>
       <Stack.Screen

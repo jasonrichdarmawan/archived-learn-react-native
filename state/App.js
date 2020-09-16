@@ -17,7 +17,6 @@ import {
 import Home from './src/features/Home';
 import Feed from './src/features/Feed';
 import SignIn from './src/features/SignIn';
-import Dashboard from './src/features/Dashboard';
 import Album from './src/features/Album';
 import Account from './src/features/Account';
 
@@ -67,7 +66,6 @@ function MyTabs({isAuthorized}) {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="Album" component={Album} />
       <Tab.Screen
         name="Pay"

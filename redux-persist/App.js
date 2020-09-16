@@ -1,7 +1,8 @@
 import React from 'react';
 
 import {Provider, useDispatch, useSelector} from 'react-redux';
-import store from './store';
+import {store, persistor} from './store';
+import {PersistGate} from 'redux-persist/integration/react';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -52,16 +53,16 @@ function PayScreenModal() {
 
 const nullComponent = () => null;
 const Tab = createBottomTabNavigator();
-function MyTabs({isAuthorized}) {
-  // const {isAuthorized} = useSelector(selectAuthState);
-  console.log('MyTabs() isAuthorized', isAuthorized); // Screen can't pass props.
-  const dispatch = useDispatch();
+function MyTabs() {
+  const {isAuthorized} = useSelector(selectAuthState);
+  console.log('MyTabs() isAuthorized', isAuthorized);
+  // const dispatch = useDispatch();
 
-  if (isAuthorized === false) {
-    setTimeout(() => {
-      dispatch(signIn());
-    }, 3000);
-  }
+  // if (isAuthorized === false) {
+  //   setTimeout(() => {
+  //     dispatch(signIn());
+  //   }, 3000);
+  // }
 
   return (
     <Tab.Navigator>
@@ -102,10 +103,8 @@ function MyStack() {
           headerTitle: '',
         }}
         name="MyTabs"
-      >
-        {/* see why callback is bad in question #1's reference */}
-        {() => <MyTabs isAuthorized={isAuthorized} />}
-      </Stack.Screen>
+        component={MyTabs}
+      />
       {isAuthorized === false && (
         <Stack.Screen name="Sign In" component={SignIn} />
       )}
@@ -137,6 +136,7 @@ function App() {
   const dispatch = useDispatch();
   if (isAuthorized === undefined) {
     dispatch(fetchAuthState());
+    console.log('App() dispatch(fetchAuthState())');
     return <Splash />;
   }
 
@@ -146,9 +146,11 @@ function App() {
 export default function Root() {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <App />
-      </NavigationContainer>
+      <PersistGate loading={<Splash />} persistor={persistor}>
+        <NavigationContainer>
+          <App />
+        </NavigationContainer>
+      </PersistGate>
     </Provider>
   );
 }

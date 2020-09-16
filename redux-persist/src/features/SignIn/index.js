@@ -1,15 +1,15 @@
 import React from 'react';
 
 import {View, Text, Button} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {signIn} from '../AuthState/AuthStateSlice';
 
-export default function SignIn({navigation}) {
+export default function SignIn() {
+  const dispatch = useDispatch();
   return (
     <View>
-      <Text>SignIn</Text>
-      <Button
-        title="Navigate to Dashboard"
-        onPress={() => navigation.navigate('MyTabs')}
-      />
+      <Text>Sign In</Text>
+      <Button title="Sign In" onPress={() => dispatch(signIn())} />
     </View>
   );
 }

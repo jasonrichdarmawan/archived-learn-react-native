@@ -12,7 +12,6 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   fetchAuthState,
   selectAuthState,
-  signIn,
 } from './src/features/AuthState/AuthStateSlice';
 
 import Home from './src/features/Home';
@@ -56,14 +55,7 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
   const {isAuthorized} = useSelector(selectAuthState);
   console.log('MyTabs() isAuthorized', isAuthorized);
-  // const dispatch = useDispatch();
-
-  // if (isAuthorized === false) {
-  //   setTimeout(() => {
-  //     dispatch(signIn());
-  //   }, 3000);
-  // }
-
+  
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={Home} />

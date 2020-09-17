@@ -23,7 +23,7 @@ export default function Album() {
     }
   }
 
-  React.useState(() => {
+  React.useEffect(() => {
     db.transaction(function (txa) {
       txa.executeSql(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='app'",
@@ -84,40 +84,6 @@ export default function Album() {
         },
       );
     });
-
-    // db.transaction(function (txn) {
-    //   txn.executeSql(
-    //     "SELECT name FROM sqlite_master WHERE type='table' AND name='table_user'",
-    //     [],
-    //     function (tx, res) {
-    //       console.log('Album(), db.transaction(), item: ', res.rows.length);
-    //       txn.executeSql('DROP TABLE IF EXISTS table_user', [])
-    //     }
-    //   );
-    // });
-    // db.transaction(function (txn) {
-    //   console.log('Album(), db.transaction()');
-    //   txn.executeSql(
-    //     "SELECT name FROM sqlite_master WHERE type='table' AND name='table_user'",
-    //     [],
-    //     function (tx, res) {
-    //       console.log('Album(), db.transaction(), item: ', res.rows.length);
-    //       if (res.rows.length == 0) {
-    //         console.log('Album(), db.transaction(), DROP TABLE, CREATE TABLE');
-    //         txn.executeSql('DROP TABLE IF EXISTS table_user', []);
-    //         txn.executeSql(
-    //           'CREATE TABLE IF NOT EXISTS table_user(user_id INTEGER PRIMARY KEY AUTOINCREMENT, user_name VARCHAR(20), user_contact INT(10), user_address VARCHAR(255))',
-    //           [],
-    //         );
-    //       }
-    //     },
-    //   );
-    // }, []);
-
-    // fetchAlbums().then((response) => {
-    //   console.log(response);
-    //   setData(response);
-    // });
   }, []);
 
   return (

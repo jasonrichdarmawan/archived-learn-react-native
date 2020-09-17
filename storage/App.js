@@ -30,6 +30,7 @@ function MyTabs() {
             name="SignIn"
             component={nullComponent}
             options={({navigation}) => ({
+              title: 'Sign In',
               tabBarButton: (props) => (
                 <TouchableOpacity
                   {...props}

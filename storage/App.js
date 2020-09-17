@@ -1,9 +1,12 @@
 import React from 'react';
 
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { PersistGate } from 'redux-persist/integration/react';
+import {createStackNavigator} from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native';
+
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+import {store, persistor} from './store';
 
 const nullComponent = () => null;
 const Tab = createBottomTabNavigator();
@@ -25,11 +28,17 @@ function MyStack() {
 }
 
 function App() {
-  return (
-    <NavigationContainer>
-      <MyStack />
-    </NavigationContainer>
-  );
+  return <MyStack />;
 }
 
-export default App;
+export default function Root() {
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer>
+          <App />
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
+  );
+}

@@ -7,6 +7,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistor} from './store';
+import Splash from './src/components/splash';
 
 const nullComponent = () => null;
 const Tab = createBottomTabNavigator();
@@ -34,7 +35,7 @@ function App() {
 export default function Root() {
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={<Splash />} persistor={persistor}>
         <NavigationContainer>
           <App />
         </NavigationContainer>

@@ -9,11 +9,11 @@ import {Provider, useSelector} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistor} from './store';
 import Splash from './src/components/splash';
-import Account from './src/features/Account';
 import SignIn from './src/features/SignIn';
+import Account from './src/features/Account';
+import Album from './src/features/Album';
 import {selectAccount} from './src/features/Account/AccountSlice';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Button} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 
 const nullComponent = () => null;
 const Tab = createBottomTabNavigator();
@@ -21,7 +21,7 @@ function MyTabs() {
   const {isAuthorized} = useSelector(selectAccount);
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Album" component={nullComponent} />
+      <Tab.Screen name="Album" component={Album} />
       {isAuthorized === true ? (
         <Tab.Screen name="Account" component={Account} />
       ) : (

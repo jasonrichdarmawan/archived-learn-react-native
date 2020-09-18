@@ -11,9 +11,11 @@ import {store, persistor} from './store';
 import Splash from './src/components/splash';
 import SignIn from './src/features/SignIn';
 import Account from './src/features/Account';
-import Album from './src/features/Album';
 import {selectAccount, signIn} from './src/features/Account/AccountSlice';
 import {TouchableOpacity} from 'react-native';
+import ListAlbum from './src/features/Album/ListAlbum';
+import { ViewAlbum } from './src/features/Album/ViewAlbum';
+import AddAlbum from './src/features/Album/AddAlbum';
 
 const nullComponent = () => null;
 const Tab = createBottomTabNavigator();
@@ -21,7 +23,7 @@ function MyTabs() {
   const {isAuthorized} = useSelector(selectAccount);
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Album" component={Album} />
+      <Tab.Screen name="Album" component={ListAlbum} />
       {isAuthorized === true ? (
         <Tab.Screen name="Account" component={Account} />
       ) : (
@@ -53,11 +55,13 @@ function MyStack() {
       <Stack.Screen
         name="MyTabs"
         component={MyTabs}
-        options={({route}) => ({title: getFocusedRouteNameFromRoute(route)})}
+        options={({route}) => ({title: getFocusedRouteNameFromRoute(route) ?? 'Album'})}
       />
       {isAuthorized === false && (
         <Stack.Screen name="Sign In" component={SignIn} />
       )}
+      <Stack.Screen name="View Album" component={ViewAlbum} />
+      <Stack.Screen name="Add Album" component={AddAlbum} />
     </Stack.Navigator>
   );
 }

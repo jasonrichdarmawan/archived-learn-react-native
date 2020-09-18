@@ -1,10 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, Animated, Text, Button} from 'react-native';
+import {StyleSheet, View, Text, Animated, Button} from 'react-native';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
-import Splash from '../../components/splash';
-import {openDatabase} from 'react-native-sqlite-storage';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import {Input} from 'react-native-elements';
+import {openDatabase} from 'react-native-sqlite-storage';
+import Splash from '../../components/splash';
 
 const styles = StyleSheet.create({
   item: {
@@ -34,6 +33,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
 });
+
+const db = openDatabase({name: 'app.db'});
 
 function LeftActions(progress, dragX) {
   // console.log('Album() LeftActions()', progress, dragX)
@@ -102,13 +103,9 @@ function Separator() {
   return <View style={styles.separator} />;
 }
 
-const db = openDatabase({name: 'app.db'});
-
-export default function Album() {
+export default function ListAlbum({navigation}) {
   const [isLoading, setLoading] = React.useState(true);
   const [data, setData] = React.useState();
-
-  const [viewId, setViewId] = React.useState();
 
   function deleteAlbum(id) {
     db.transaction(function (txa) {
@@ -131,7 +128,11 @@ export default function Album() {
     return (
       <SwipeableItem
         item={item}
-        onSwipeFromLeft={() => handleView(item.id)}
+        onSwipeFromLeft={() =>
+          navigation.navigate('View Album', {
+            id: item.id,
+          })
+        }
         onRightPress={() => deleteAlbum(item.id)}
       />
     );
@@ -139,7 +140,7 @@ export default function Album() {
 
   const renderItemMemo = React.useMemo(() => renderItem, [data]);
 
-  async function fetchAlbums() {
+  async function fetchAlbum() {
     try {
       let response = await fetch(
         'https://jsonplaceholder.typicode.com/albums?_start=00&_limit=40',
@@ -152,7 +153,7 @@ export default function Album() {
     }
   }
 
-  React.useEffect(() => {
+  function populateData() {
     db.transaction(function (txa) {
       txa.executeSql(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='app'",
@@ -170,8 +171,8 @@ export default function Album() {
               [],
             );
 
-            fetchAlbums().then((response) => {
-              console.log('Album() fetchAlbums()');
+            fetchAlbum().then((response) => {
+              console.log('Album() fetchAlbum()');
               setData(response);
               db.transaction(function (txc) {
                 response.map((item) =>
@@ -194,12 +195,12 @@ export default function Album() {
               });
             });
           } else {
-            txa.executeSql('SELECT * FROM app', [], function (tx, res) {
+            txa.executeSql('SELECT * FROM app', [], function (txd, resd) {
               console.log('Album(), db.transaction(), SELECT *');
 
               let temp = [];
-              for (let i = 0; i < res.rows.length; i++) {
-                temp.push(res.rows.item(i));
+              for (let i = 0; i < resd.rows.length; i++) {
+                temp.push(resd.rows.item(i));
               }
 
               setData(temp);
@@ -209,123 +210,35 @@ export default function Album() {
         },
       );
     });
+  }
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('ListAlbum() syncAlbum()');
+      populateData();
+    });
+
+    return unsubscribe;
   }, []);
 
-  const [inputs, setInputs] = React.useState({userId: '', title: ''});
-  const {userId, title} = inputs;
-  function handleView(id) {
-    setLoading(true);
-    db.transaction(function (tx) {
-      tx.executeSql('SELECT * FROM app where id=?', [id], function (txb, resb) {
-        console.log(`Album() handleView() id ${id} item: ${resb.rows.length}`);
-        if (resb.rows.length == 1) {
-          setInputs((old) => ({
-            ...old,
-            userId: '' + resb.rows.item(0).userId,
-            title: resb.rows.item(0).title,
-          }));
-          setRes('view');
-          setViewId(id);
-          setLoading(false);
-        } else {
-          console.error(
-            'Album() handleView() SELECT * FROM app where id=? not found',
-          );
-        }
-      });
-    });
-  }
-  function handleChange(key, value) {
-    setInputs((old) => {
-      return {...old, [key]: value};
-    });
-  }
-  function handleSave() {
-    db.transaction(function (tx) {
-      tx.executeSql(
-        'UPDATE app SET userId=?, title=? where id=?',
-        [userId, title, viewId],
-        function (txb, resb) {
-          if (resb.rowsAffected > 0) {
-            console.log(
-              'Album(), handleSave(), db.transaction(), UPDATE, success',
-            );
-            setData((old) =>
-              old.map((item) =>
-                item.id === viewId ? {...item, userId, title} : item,
-              ),
-            );
-            setViewId();
-          } else {
-            console.error(
-              'Album(), handleSave(), db.transaction(), UPDATE, failed',
-            );
-          }
-        },
-      );
-    });
-  }
-
-  function handleAdd() {
-    db.transaction(function (tx) {
-      // question: why I can insert userId with string instead of Integer?
-      tx.executeSql('INSERT INTO app (userId, title) VALUES (?,?)', [userId, title], function (txb, resb) {
-        if (resb.rowsAffected > 0) {
-          console.log('Album() handleAdd() db.transaction() success');
-        } else {
-          console.log('Album() handleAdd() db.transaction() failed')
-        }
-      })
-    })
-  }
-
-  const [req, setReq] = React.useState();
-  let content;
-  if (req === 'view' && viewId !== undefined) {
-    content = (
-      <>
-        <Input
-          label="userId"
-          value={userId}
-          onChangeText={(value) => handleChange('userId', value)}
-        />
-        <Input
-          label="title"
-          value={title}
-          onChangeText={(value) => handleChange('title', value)}
-        />
-        <Button onPress={handleSave} title="Save" />
-      </>
-    );
-  } else if (req === 'add') {
-    content = (
-      <>
-        <Input
-          label="userId"
-          value={userId}
-          onChangeText={(value) => handleChange('userId', value)}
-        />
-        <Input
-          label="title"
-          value={title}
-          onChangeText={(value) => handleChange('title', value)}
-        />
-        <Button onPress={handleAdd} title="Add" />
-      </>
-    );
-  } else {
-    content = (
-      <>
-        <Button title="Add" onPress={() => setReq("add")} />
-        <FlatList
-          data={data}
-          keyExtractor={({id}) => 'albumId: ' + id}
-          renderItem={renderItemMemo}
-          ItemSeparatorComponent={Separator}
-        />
-      </>
-    );
-  }
-
-  return <>{isLoading === true ? <Splash /> : content}</>;
+  return (
+    <>
+      {isLoading === true ? (
+        <Splash />
+      ) : (
+        <>
+          <Button
+            title="Add"
+            onPress={() => navigation.navigate('Add Album')}
+          />
+          <FlatList
+            data={data}
+            keyExtractor={({id}) => 'albumId: ' + id}
+            renderItem={renderItemMemo}
+            ItemSeparatorComponent={Separator}
+          />
+        </>
+      )}
+    </>
+  );
 }

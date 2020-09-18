@@ -5,14 +5,14 @@ import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
 } from '@react-navigation/native';
-import {Provider, useSelector} from 'react-redux';
+import {Provider, useDispatch, useSelector} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistor} from './store';
 import Splash from './src/components/splash';
 import SignIn from './src/features/SignIn';
 import Account from './src/features/Account';
 import Album from './src/features/Album';
-import {selectAccount} from './src/features/Account/AccountSlice';
+import {selectAccount, signIn} from './src/features/Account/AccountSlice';
 import {TouchableOpacity} from 'react-native';
 
 const nullComponent = () => null;

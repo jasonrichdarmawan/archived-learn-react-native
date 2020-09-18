@@ -2,7 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const accountSlice = createSlice({
   name: 'account',
-  initialState: {},
+  initialState: { isAuthorized: false },
   reducers: {
     signIn: () => ({isAuthorized: true}),
     signOut: () => ({isAuthorized: false}),

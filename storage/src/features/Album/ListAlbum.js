@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 const db = openDatabase({name: 'app.db'});
 
 function LeftActions(progress, dragX) {
-  // console.log('Album() LeftActions()', progress, dragX)
+  // console.log('ListAlbum() LeftActions()', progress, dragX)
   const scale = dragX.interpolate({
     inputRange: [0, 100],
     outputRange: [0, 1],
@@ -53,7 +53,7 @@ function LeftActions(progress, dragX) {
 }
 
 function RightActions({progress, dragX, onPress}) {
-  // console.log('Album() LeftActions()', progress, dragX)
+  // console.log('ListAlbum() LeftActions()', progress, dragX)
   const scale = dragX.interpolate({
     inputRange: [-100, 0],
     outputRange: [1, 0],
@@ -71,7 +71,7 @@ function RightActions({progress, dragX, onPress}) {
 }
 
 function Item({item}) {
-  // console.log('Album() Item() render')
+  // console.log('ListAlbum() Item() render')
   return (
     <View style={[styles.item]}>
       <Text>
@@ -82,7 +82,7 @@ function Item({item}) {
 }
 
 function SwipeableItem({item, onSwipeFromLeft, onRightPress}) {
-  // console.log('Album() SwipeableItem() render')
+  // console.log('ListAlbum() SwipeableItem() render')
   return (
     <Swipeable
       renderLeftActions={LeftActions}
@@ -110,21 +110,21 @@ export default function ListAlbum({navigation}) {
   function deleteAlbum(id) {
     db.transaction(function (txa) {
       txa.executeSql('DELETE FROM app where id=?', [id], function (txb, resb) {
-        console.log('Album(), deleteAlbum() id', id);
+        console.log('ListAlbum(), deleteAlbum() id', id);
         if (resb.rowsAffected > 0) {
-          console.log(`Album(), deleteAlbum() id ${id} success`);
+          console.log(`ListAlbum(), deleteAlbum() id ${id} success`);
           setData((old) =>
             old.filter((item) => (item.id === id ? false : true)),
           );
         } else {
-          console.error(`Album(), deleteAlbum() id ${id} failed`);
+          console.error(`ListAlbum(), deleteAlbum() id ${id} failed`);
         }
       });
     });
   }
 
   function renderItem({item}) {
-    // console.log('Album() renderItem() render', item.id);
+    // console.log('ListAlbum() renderItem() render', item.id);
     return (
       <SwipeableItem
         item={item}
@@ -161,10 +161,15 @@ export default function ListAlbum({navigation}) {
         function (txb, resb) {
           // txa.executeSql('DROP TABLE IF EXISTS app', []);
 
-          console.log('Album(), db.transaction(), item: ', resb.rows.length);
+          console.log(
+            'ListAlbum(), db.transaction(), item: ',
+            resb.rows.length,
+          );
 
           if (resb.rows.length == 0) {
-            console.log('Album(), db.transaction(), DROP TABLE, CREATE TABLE');
+            console.log(
+              'ListAlbum(), db.transaction(), DROP TABLE, CREATE TABLE',
+            );
             txa.executeSql('DROP TABLE IF EXISTS app', []);
             txa.executeSql(
               'CREATE TABLE IF NOT EXISTS app(id INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER NOT NULL, title TEXT NOT NULL)',
@@ -172,7 +177,7 @@ export default function ListAlbum({navigation}) {
             );
 
             fetchAlbum().then((response) => {
-              console.log('Album() fetchAlbum()');
+              console.log('ListAlbum() fetchAlbum()');
               setData(response);
               db.transaction(function (txc) {
                 response.map((item) =>
@@ -182,11 +187,11 @@ export default function ListAlbum({navigation}) {
                     function (txd, resd) {
                       if (resd.rowsAffected > 0) {
                         console.log(
-                          `Album(), db.transaction(), INSERT id ${item.id} success`,
+                          `ListAlbum(), db.transaction(), INSERT id ${item.id} success`,
                         );
                       } else {
                         console.error(
-                          `Album(), db.transaction(), INSERT id ${item.id} failed`,
+                          `ListAlbum(), db.transaction(), INSERT id ${item.id} failed`,
                         );
                       }
                     },
@@ -196,7 +201,7 @@ export default function ListAlbum({navigation}) {
             });
           } else {
             txa.executeSql('SELECT * FROM app', [], function (txd, resd) {
-              console.log('Album(), db.transaction(), SELECT *');
+              console.log('ListAlbum(), db.transaction(), SELECT *');
 
               let temp = [];
               for (let i = 0; i < resd.rows.length; i++) {

@@ -219,7 +219,7 @@ export default function ListAlbum({navigation}) {
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log('ListAlbum() syncAlbum()');
+      console.log('ListAlbum() populateData()');
       populateData();
     });
 

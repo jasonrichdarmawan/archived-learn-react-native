@@ -5,17 +5,19 @@ import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
 } from '@react-navigation/native';
-import {Provider, useDispatch, useSelector} from 'react-redux';
+import {Provider, useSelector} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistor} from './store';
 import Splash from './src/components/splash';
 import SignIn from './src/features/SignIn';
 import Account from './src/features/Account';
-import {selectAccount, signIn} from './src/features/Account/AccountSlice';
+import {selectAccount} from './src/features/Account/AccountSlice';
 import {TouchableOpacity} from 'react-native';
 import ListAlbum from './src/features/Album/ListAlbum';
-import { ViewAlbum } from './src/features/Album/ViewAlbum';
+import {ViewAlbum} from './src/features/Album/ViewAlbum';
 import AddAlbum from './src/features/Album/AddAlbum';
+import Home from './src/features/Home';
+import Gallery from './src/features/Gallery';
 
 const nullComponent = () => null;
 const Tab = createBottomTabNavigator();
@@ -23,13 +25,27 @@ function MyTabs() {
   const {isAuthorized} = useSelector(selectAccount);
   return (
     <Tab.Navigator>
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen
+        name="GalleryNull"
+        component={nullComponent}
+        options={({navigation}) => ({
+          title: 'Gallery',
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              {...props}
+              onPress={() => navigation.navigate('Gallery')}
+            />
+          ),
+        })}
+      />
       <Tab.Screen name="Album" component={ListAlbum} />
       {isAuthorized === true ? (
         <Tab.Screen name="Account" component={Account} />
       ) : (
         isAuthorized === false && (
           <Tab.Screen
-            name="SignIn"
+            name="SignInNull"
             component={nullComponent}
             options={({navigation}) => ({
               title: 'Sign In',
@@ -55,11 +71,14 @@ function MyStack() {
       <Stack.Screen
         name="MyTabs"
         component={MyTabs}
-        options={({route}) => ({title: getFocusedRouteNameFromRoute(route) ?? 'Album'})}
+        options={({route}) => ({
+          title: getFocusedRouteNameFromRoute(route) ?? 'Home',
+        })}
       />
       {isAuthorized === false && (
         <Stack.Screen name="Sign In" component={SignIn} />
       )}
+      <Stack.Screen name="Gallery" component={Gallery} />
       <Stack.Screen name="View Album" component={ViewAlbum} />
       <Stack.Screen name="Add Album" component={AddAlbum} />
     </Stack.Navigator>

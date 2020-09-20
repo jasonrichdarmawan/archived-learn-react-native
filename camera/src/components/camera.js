@@ -5,7 +5,7 @@ import {TouchableOpacity, Alert, StyleSheet} from 'react-native';
 
 export default function Camera({onPicture}) {
   let camera;
-  const [isTakingPicture, setTakePicture] = React.useState(false);
+  let isTakingPicture = false;
   
   async function takePicture() {
     if (camera && !isTakingPicture) {
@@ -15,7 +15,7 @@ export default function Camera({onPicture}) {
         forceUpOrientation: true,
       };
 
-      setTakePicture(true);
+      isTakingPicture = true;
 
       try {
         const data = await camera.takePictureAsync(options);
@@ -25,10 +25,11 @@ export default function Camera({onPicture}) {
         Alert.alert('Error', 'Failed to take picture: ' + (err.message || err));
         return;
       } finally {
-        setTakePicture(false);
+        isTakingPicture = false;
       }
     }
   }
+
 
   return (
     <RNCamera

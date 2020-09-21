@@ -10,7 +10,6 @@ export default function Home() {
   }
 
   function onBackToCamera() {
-    console.log('omg')
     setImg(null);
   }
 

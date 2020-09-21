@@ -10,6 +10,7 @@ export default function Home() {
   }
 
   function onBackToCamera() {
+    console.log('omg')
     setImg(null);
   }
 
@@ -19,7 +20,8 @@ export default function Home() {
         {img ? (
           <TouchableHighlight
             style={{flex: 1}}
-            onPress={() => onBackToCamera()}>
+            onPress={onBackToCamera}
+          >
             <Image source={{uri: img}} style={{flex: 1}} />
           </TouchableHighlight>
         ) : (

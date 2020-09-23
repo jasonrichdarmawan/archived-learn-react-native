@@ -24,53 +24,45 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+// Cloud Messaging reference: https://rnfirebase.io/messaging/usage
+
+import {Alert} from 'react-native';
+import messaging from '@react-native-firebase/messaging';
+
+// Local Notification reference: https://github.com/zo0r/react-native-push-notification
+import PushNotification from 'react-native-push-notification';
+
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+  console.log('Message handled in the background!', remoteMessage);
+});
+
 const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
+  React.useEffect(() => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      // console.log(remoteMessage);
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      PushNotification.localNotification({
+        title: remoteMessage.notification.title,
+        message: remoteMessage.notification.body,
+
+        // largeIcon: "",
+        largeIconUrl: remoteMessage.notification.android.imageUrl,
+      });
+    });
+
+    return unsubscribe;
+  }, []);
+  return <></>;
 };
+
+// function HeadlessCheck({ isHeadless }) {
+//   if (isHeadless) {
+//     // App has been launched in the background by iOS, ignore
+//     return null;
+//   }
+
+//   return <App />;
+// }
 
 const styles = StyleSheet.create({
   scrollView: {
